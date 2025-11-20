@@ -40,3 +40,24 @@ Static Member Functions:
 3. Cannot use this pointer.
 
 Example for static member functions:
+
+#include <iostream>
+using namespace std;
+class Student {
+public:
+    static int totalStudents;
+    
+    static void showCount() {     // static function
+        cout << "Total students: " << totalStudents << endl;
+    }
+};
+
+int Student::totalStudents = 5;
+
+int main() {
+    Student::showCount();  // No need to create object
+    return 0;
+}
+
+Output:
+Total students: 5
