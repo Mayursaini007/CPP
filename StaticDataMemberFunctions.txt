@@ -1,0 +1,42 @@
+Static Data member and member functions:
+Static data member and member functions are special because they belong to class only, not any object.
+
+Static Data Members:
+1. Declared using static keyword inside the class.
+2. Memory is allocated only once.
+3. Used to store common data for all objects.
+4. Must be defined outside the class.
+
+Example for static data member:
+
+#include <iostream>
+using namespace std;
+
+class Student {
+public:
+    static int totalStudents;  // declaration
+
+    Student() {
+        totalStudents++;       // increment shared variable
+    }
+};
+
+int Student::totalStudents = 0;  // definition
+
+int main() {
+    Student s1, s2, s3;
+    cout << "Total students: " << Student::totalStudents;  // Access using class name
+    return 0;
+}
+
+
+Output: 
+Total students: 3
+
+Static Member Functions:
+
+1. Can be called without creating an object.
+2. Can only access static data members (not normal members).
+3. Cannot use this pointer.
+
+Example for static member functions:
