@@ -1,0 +1,175 @@
+Structure Padding:
+
+1. When we create a structure in cpp, the compiler adds extra empty bytes (called padding) to make the data access faster.
+The goal here is to align data in memory according to CPU requirements.
+2. Most CPUs cannot read data from any random byte. they can read fater when the data is tored at a particular byte.
+3. The CPU does not read memory byte by byte, it reads memory in chunks. For example:
+In 32 bit systems the CPU reads 4 bytes at a time and in 64 bit systems it reads 8 bytes at a time.
+4. So if the variable is not aligned at a multiple of its size the CPU needs one more step to access that memory.
+
+Examples:
+
+Case 1: Data Aligned (FAST)
+
+    int x;   // 4 bytes — aligned at address 0x1000 (multiple of 4)
+    CPU reads it in one operation ✔
+    [ 1000 | 1001 | 1002 | 1003 ]   → Reads all at once
+
+Case 2: Misaligned Data (SLOW)
+
+    // Imagine 'x' starts at 0x1003 (not multiple of 4)
+    int x;
+    Memory:
+    [1003 | 1004 | 1005 | 1006]
+
+    CPU cannot read from 1003 directly → takes two reads!
+    1st read 1000-1003
+    2nd read 1004-1007
+
+    Then it combines parts to form the integer which is slower.
+
+Memory Layout Example:
+
+    struct B {
+        char a;   // 1 byte
+        int  b;   // 4 bytes
+        char c;   // 1 byte
+    };
+
+    | Byte Index | Data        |
+    | ---------- | ----------- |
+    | 0          | a (char)    |
+    | 1–3        | **padding** |
+    | 4–7        | b (int)     |
+    | 8          | c (char)    |
+    | 9–11       | **padding** |
+
+    Total: 12 bytes
+
+⚙️ Alignment Rules:
+    1. Each data member must start at an address multiple of its size.
+    2. Total struct size must be multiple of the largest member's size.
+
+🧠 Better Ordering to Reduce Padding
+    struct B_opt {
+        int  b;    // 4 bytes
+        char a;    // 1 byte
+        char c;    // 1 byte
+    };
+
+    | Byte Index | Data        |
+    | ---------- | ----------- |
+    | 0–3        | b (int)     |
+    | 4          | a (char)    |
+    | 5          | c (char)    |
+    | 6–7        | **padding** |
+
+    Total size = 8 bytes (better than 12!)
+
+📦 Avoid Padding Completely (Packing)
+    Below Example can slow perfromance
+
+    #pragma pack(1)
+    struct B_packed {
+        char a;
+        int  b;
+        char c;
+    };
+    #pragma pack()
+
+    | Byte Index | Data     |
+    | ---------- | -------- |
+    | 0          | a (char) |
+    | 1–4        | b (int)  |
+    | 5          | c (char) |
+
+    Total: 6 bytes (no padding)
+
+🧷 Comparison
+
+    | Type           | sizeof   |
+    | -------------- | -------- |
+    | Default struct | 12 bytes |
+    | Ordered struct | 8 bytes  |
+    | Packed struct  | 6 bytes  |
+
+Code Example:
+
+    #include <iostream>
+    using namespace std;
+
+    struct B_default {
+        char a;
+        int  b;
+        char c;
+    };
+
+    struct B_opt {
+        int  b;    // 4 bytes
+        char a;    // 1 byte
+        char c;    // 1 byte
+    };
+
+    #pragma pack(1)
+    struct B_packed {
+        char a;
+        int  b;
+        char c;
+    };
+    #pragma pack()
+
+    int main() {
+        cout << "Default struct: " << sizeof(B_default) << endl;
+        cout << "Reduce Padding: " << sizeof(B_opt) << endl;
+        cout << "Packed struct:  " << sizeof(B_packed)  << endl;
+    }
+
+    Output:
+    Default struct: 12
+    Reduce Padding: 8
+    Packed struct:  6
+
+
+Structure padding with classes:
+
+1. Structure Padding also happens with classes, because in cpp, structure and class are almost same in terms of memory layout.
+2. The only difference in struct and class is access specifiers:
+    struct members are public by default, class members are private by default.
+3. But memory, padding, and alignment work exactly the same in both.
+
+Example:
+
+    #include <iostream>
+    using namespace std;
+
+    class Test {
+        char a;   // 1 byte
+        int b;    // 4 bytes
+        char c;   // 1 byte
+    };
+
+    class Test1 {
+        int b;    //4 bytes
+        char a;   //1 byte
+        char c;   //1 byte
+    };
+
+    #pragma pack(1)
+    class Test2 {
+        int b;
+        char a;
+        char c;
+    };
+    #pragma pack()
+
+    int main() {
+        cout <<"Test size is: "<< sizeof(Test) << endl;
+        cout <<"Test1 size is: "<< sizeof(Test1) << endl;
+        cout <<"Test2 size is: "<< sizeof(Test2) << endl;
+        return 0;
+    }
+
+    Output:
+    Test size is: 12
+    Test1 size is: 8
+    Test2 size is: 6
