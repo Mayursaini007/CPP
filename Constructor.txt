@@ -1,0 +1,109 @@
+Constructor in CPP:
+
+1. Constructor in cpp is a special method that  is invoked automatically at the time of object creation.
+2. It is used to initialize the data members of the new objects.
+3. The constructor in cpp has same name as the class ort the structure. It constructs the values i.e. provides data for the object which is why it is called a constructor.
+4. Contructor does not have a return value, hence they don't have a return type.
+5. Constructor must be placed in the public section of a class. However they can also be private.
+6. If we do not specify a constructor, cpp compiler generates a default constructor for object (expects no parameters and has an empty body).
+7. Default contructors don't have any input arguments however, copy and parameterized constructors have input arguments.
+8. There are three types of contructors:
+    1. Default ---> Class_name()
+    2. Parameterized  ---> Class_name(parameters)
+    3. Copy ---> Class_name(const Class_name old_object)
+
+
+Example (Default Constructor):
+
+#include <iostream>
+using namespace std;
+
+class Student {
+    int rno;
+    char name[10];
+    double fee;
+
+    public:
+    Student(){
+        cout<< "We can take the student details here";
+    }
+};
+
+int main() {
+    Student s;
+    return 0;
+}
+
+Output: 
+We can take the student details here
+
+Example (Parameterized constructor):
+#include <iostream>
+using namespace std;
+
+class Student {
+    int x;
+    int y;
+
+    public:
+    Student(){
+        cout<< "We can take the student details here";
+    }
+    Student(int a, int b){
+        cout<<"This is a parameterized constructor"<<endl;
+        x = a;
+        y = b;
+    }
+    Student(int a, float b){
+        cout<<"This is an example of constructor overloading"<<endl;
+        x = a;
+        y = b;
+    }
+};
+
+int main() {
+    Student s(1, 2);
+    Student s1(1, 2.0f);
+    return 0;
+}
+
+
+Constructors can also be overloaded, same as we can overload function. Above example inlcludes both parameterized constructor and constructor overloading.
+
+Important Example:
+
+#include <iostream>
+using namespace std;
+
+class Student {
+    int x;
+    int y;
+
+    public:
+    Student(int a, int b){
+        cout<<"This is a parameterized constructor"<<endl;
+        x = a;
+        y = b;
+    }
+    Student(int a, float b){
+        cout<<"This is an example of constructor overloading"<<endl;
+        x = a;
+        y = b;
+    }
+};
+
+int main() {
+    Student s;
+    Student s1(1, 2);
+    Student s2(1, 2.0f);
+    return 0;
+}
+
+Output:
+This will give a compilation error. If we are defining parameterized contructors then we need to explicitly define a default contructor in order for this code to work.
+
+error: no matching constructor for initialization of 'Student'
+
+Private constructor and its uses:
+
+1. 

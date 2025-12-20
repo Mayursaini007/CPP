@@ -1,0 +1,36 @@
+Destructor in CPP:
+
+1. Destructor is an instance member fuction which is invoked automatically whenever an object is going to be destroyed.
+2. This means that a destructor is the last function that is going to be called before an object is destroyed.
+3. Destructor also has the same name as their class name preceded by the tiled symbol (~).
+4. It is not possible to define more than one destructor.
+5. Destructor neither requires any arguement nor returns any value.
+6. It is automatically called when object goes out of scope.
+7. Destructor releases memory occupied by the objects created by contructors.
+8. It cannot be declared static or const.
+9. Destructor should be declared in the public section of a class.
+
+Example:
+
+#include <iostream>
+using namespace std;
+
+class A {
+    int *p;
+
+    public:
+    A(){
+        p = new int;
+        cout<< "Constructor of A \n";
+    }
+    ~A(){
+        delete p;
+        cout<< "Destructor of A \n";
+    }
+
+};
+
+int main() {
+    A obj;
+    return 0;
+}
