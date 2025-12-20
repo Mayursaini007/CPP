@@ -2,15 +2,15 @@ Constructor in CPP:
 
 1. Constructor in cpp is a special method that  is invoked automatically at the time of object creation.
 2. It is used to initialize the data members of the new objects.
-3. The constructor in cpp has same name as the class ort the structure. It constructs the values i.e. provides data for the object which is why it is called a constructor.
-4. Contructor does not have a return value, hence they don't have a return type.
+3. The constructor in cpp has same name as the class or the structure. It constructs the values i.e. provides data for the object which is why it is called a constructor.
+4. Constructor does not have a return value, hence they don't have a return type.
 5. Constructor must be placed in the public section of a class. However they can also be private.
 6. If we do not specify a constructor, cpp compiler generates a default constructor for object (expects no parameters and has an empty body).
 7. Default contructors don't have any input arguments however, copy and parameterized constructors have input arguments.
 8. There are three types of contructors:
     1. Default ---> Class_name()
     2. Parameterized  ---> Class_name(parameters)
-    3. Copy ---> Class_name(const Class_name old_object)
+    3. Copy ---> Class_name(const Class_name& old_object)
 
 
 Example (Default Constructor):
@@ -68,7 +68,7 @@ int main() {
 }
 
 
-Constructors can also be overloaded, same as we can overload function. Above example inlcludes both parameterized constructor and constructor overloading.
+Constructors can also be overloaded, same as we can overload function. Above example includes both parameterized constructor and constructor overloading.
 
 Important Example:
 
@@ -104,6 +104,106 @@ This will give a compilation error. If we are defining parameterized contructors
 
 error: no matching constructor for initialization of 'Student'
 
+Copy Constructor:
+
+1. A copy constructor is a member function that initializes an object using another object of same class.
+2. General prototype ClassName (const(optional) ClassName &old_obj);
+3. The compiler has its own copy contructor as well, if we don't writ e any copy contructor the default copy contructor will automatically be called.
+
+Example:
+#include<iostream>
+using namespace std;
+class A{
+    int x;
+
+    public:
+    int get(){
+        return x;
+    }
+    A(){
+        cout<<"Default constructor"<<endl;
+    }
+    A(int a){
+        cout<<"Parameterized constructor"<<endl;
+        x = a;
+    }
+    A(const A& t){
+        cout<<"Copy Constructor"<<endl;
+        x = t.x;
+    }
+};
+int main(){
+    A a;
+    A b(10);
+    cout<<"x for b is:"<<b.get()<<endl;
+    A c(b);
+    cout<<"x for c is:"<<c.get()<<endl;
+    A d = c;
+    cout<<"x for d is:"<<d.get()<<endl;
+    return 0;
+}
+
+Output:
+Default constructor
+Parameterized constructor
+x for b is:10
+Copy Constructor
+x for c is:10
+Copy Constructor
+x for d is:10
+
+A very good question can we why do we pass the object to a copy constructor by reference, and the simplest answer would be to avoid an infinite loop. If you pass it directly by value, a new copy needs to 
+created and that in turn calls a copy constructor again and so on. By passinf reference we are only creating an alias of the existing object and no new copy needs to be created. We should also be making 
+it const in order to avoid any change in the source object. If we don't write const we can easy change the value of x inside the copy contructor and that should not be allowed.
+
 Private constructor and its uses:
 
-1. 
+1. A constructor can be private on nature. 
+2. It can be made private for various reasons, including controlling object creation, implementing singleton pattern etc. (Can be studied as a part of design patterns)
+
+Example:
+Lets understand this using singleton class example. Just to give a short explanation Singleton is used to allow only one instance of a class to exist in the entire program.
+
+#include <iostream>
+using namespace std;
+class Singleton{
+    int count;
+    Singleton(){
+        count = 0;
+        cout<<"Constructor called \n";
+    }
+    public:
+    static Singleton& getInstance(){
+        static Singleton instance;
+        return instance;
+    }
+
+    void increment(){
+        count++;
+    }
+    void showCount(){
+        cout<<"Count is:"<<count<<endl;
+    }
+};
+int main(){
+    Singleton& s1 = Singleton::getInstance();
+    Singleton& s2 = Singleton::getInstance();
+
+    s1.increment();
+    s1.showCount();
+
+    s2.increment();
+    s2.showCount();
+
+    return 0;
+}
+Output:
+Constructor called 
+Count is:1
+Count is:2
+
+To elaborate, this example tries creating two instances of class Singleton, but both refers to the same instance. While writing the getInstance method we are making it static so that this method can be used
+to access the private contructor. Since static methods can be called without creating an object. Also the instance created inside the getInstance() method is made static to make its lifetime till whole program. 
+While creating s1 and s2 both refers to the same instance, that is why while we call increment using both s1 and s2, the count value increment twice and no new count varible is made.
+
+
