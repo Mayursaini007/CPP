@@ -1,0 +1,88 @@
+Access Specifiers in CPP:
+
+1. Access specfiers controls who can access the data/functions inside a class.
+2. There are three types of access specifiers in cpp: private, public and protected.
+
+1. Public: 
+
+Accessible from anywhere:
+
+-> Inside the class
+-> Outside the class
+-> Through objects
+-> In derived classes
+
+Example:
+class Test {
+public:
+    int x = 10;
+};
+
+int main() {
+    Test t;
+    t.x = 50;  // allowed (public)
+}
+
+2. Private:
+
+Accessible only inside the same class.
+
+-> NOT accessible outside the class
+-> NOT accessible in derived classes (unless through getters/setters)
+
+Example:
+class Test {
+private:
+    int x = 10;
+
+public:
+    void setX(int val) {   // public function CAN access x
+        x = val;
+    }
+};
+int main() {
+    Test t;
+    // t.x = 50;  // ❌ NOT allowed (private)
+    t.setX(50);   // ✔ allowed through public function
+}
+
+Use when: You want strict data hiding (encapsulation).
+
+3. Protected:
+
+Accessible:
+
+-> Inside the class
+-> In derived classes
+-> ❌ NOT accessible using objects
+
+Example:
+class Base {
+protected:
+    int x = 10;
+};
+
+class Derived : public Base {
+public:
+    void fun() {
+        x = 50;  // ✔ allowed (protected + inherited)
+    }
+};
+
+int main() {
+    Derived d;
+    // d.x = 20;  // ❌ NOT allowed (protected)
+}
+
+Use when: You want children to access it, but not the outside world.
+
+Table:
+
++-------------+---------------+------------------+---------------------+
+| Access      | Within Class  | Derived Classes  | Outside via Object |
++-------------+---------------+------------------+---------------------+
+| public      | Yes           | Yes              | Yes                 |
+| protected   | Yes           | Yes              | No                  |
+| private     | Yes           | No               | No                  |
++-------------+---------------+------------------+---------------------+
+
