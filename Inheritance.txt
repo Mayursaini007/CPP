@@ -1,0 +1,336 @@
+Inheritance in CPP:
+    1. The capability of a class to derive properties and characteristics from another class is called inheritance.
+    2. Inheritance is one of the most important features of object-oriented programming.
+    3. Inheritance decreases code redundancy and increases code reusability.
+
+Syntax:
+
+    class Base_class{
+
+    };
+
+    class Derived_class : Visibility_Mode Base_class{
+
+    };
+
+Types of inheritance:
+    1. Single Inheritance
+    2. Multilevel Inheritance
+    3. Multiple Inheritance
+    4. Hierarchical Inheritance
+    5. Hybrid Inheritance
+
+Single Inheritance:
+
+    In single inheritance, a class is allowed to inherit from only one class.
+
+    Syntax:
+
+    class A{
+
+    };
+
+    class B : public A{
+
+    };
+
+
+   Base
+     |
+     v
+  Derived
+
+
+Multilevel Inheritance:
+
+    Syntax:
+
+    class C{
+
+    };
+
+    class B: public C{
+
+    };
+
+    class A: public B{
+
+    };
+
+   A (Base)
+      |
+      v
+   B (Derived from A)
+      |
+      v
+   C (Derived from B)
+
+
+Multiple Inheritance:
+
+    Syntax:
+
+    class B{
+
+    };
+
+    class C{
+
+    };
+
+    class A: public B, public C{
+
+    };
+
+   A       B
+    \     /
+     \   /
+      \ /
+     Derived
+
+
+Hierarchical Inheritance:
+
+    class A{
+
+    };
+    class B: public A{
+
+    };
+    class C: public A{
+
+    };
+    class D: public B{
+
+    };
+    class E: public B{
+
+    };
+    class F: public C{
+
+    };
+    class G: public C{
+
+    };
+
+        Base
+       /    \
+      v      v
+ Derived1  Derived2
+
+Hybrid(Virtual) Inheritance:
+
+Combinationation of two or more type of inheritance.
+
+
+
+Mode of Inheritance:
+
+Public Mode:
+    If we derive a subclass from a public base class, then the public member of the base 
+    class will become public in the derived class and protected members of the base class 
+    will become protected in the derived class.
+
+    Example:
+
+    class Base {
+    public:
+        int a;
+    protected:
+        int b;
+    private:
+        int c;
+    };
+
+    class Derived : public Base {
+    public:
+        void fun() {
+            a = 10;   // ✔ accessible
+            b = 20;   // ✔ accessible
+            // c = 30;  // ❌ not accessible
+        }
+    };
+
+    Effect on members:
+
+    Base Member      In Derived
+    --------------------------------
+    public     →     public
+    protected  →     protected
+    private    →     NOT accessible
+
+
+    Diagram:
+
+    Base:   public ----> public   (in Derived)
+            protected -> protected
+            private ---X--> (hidden)
+
+
+Protected Mode:
+    If we derive a subclass from a protected base class, then the public and protected members
+    of the base class will become protected in derived class.
+
+    Example:
+
+    class Derived : protected Base {
+        void fun() {
+            a = 10;   // was public, now protected ✔
+            b = 20;   // protected ✔
+        }
+    };
+
+    int main() {
+        Derived d;
+        // d.a;  // ❌ not accessible (became protected)
+    }
+
+    Effect on members:
+
+    Base Member      In Derived
+    --------------------------------
+    public     →     protected
+    protected  →     protected
+    private    →     NOT accessible
+
+    Diagram:
+
+    Base: public ------> protected
+          protected ---> protected
+          private ---X-> hidden
+
+
+Private Mode:
+    If we derive a subclass from a private base class, then the public and protected members
+    of the base class will become private in derived class.
+
+    Example:
+
+    class Derived : private Base {
+    public:
+        void fun() {
+            a = 10;   // was public, now private ✔
+            b = 20;   // was protected, now private ✔
+        }
+    };
+
+    int main() {
+        Derived d;
+        // d.a;  // ❌ now private, cannot be accessed
+    }
+
+    Effect on members:
+
+    Base Member      In Derived
+    --------------------------------
+    public     →     private
+    protected  →     private
+    private    →     NOT accessible
+
+    Diagram:
+
+    Base: public ------> private
+          protected ---> private
+          private ---X-> hidden
+
+
+Clean Summary Table:
+
+    Inheritance Type | Base public → | Base protected → | Base private →
+    ---------------------------------------------------------------------
+    public           | public         | protected        | inaccessible
+    protected        | protected      | protected        | inaccessible
+    private          | private        | private          | inaccessible
+
+
+How Constructor and Destructor works in Inheritance:
+
+1. Base class constructor runs first because cpp builds objects from parent to child.
+2. Derived class destructor runs first because cpp destroys objects from child to parent.
+
+
+Examples:
+
+Constructor Example:
+
+    #include<iostream>
+    using namespace std;
+    class Base{
+        public:
+        Base(){ cout<<"Base class constructor\n";}
+    };
+
+    class Derived: public Base{
+        public:
+        Derived(){ cout<<"Derived class constructor\n";}
+    };
+    int main(){
+        Derived d;
+        return 0;
+    }
+
+    Output:
+    Base class constructor
+    Derived class constructor
+
+Destructor Example:
+
+    #include<iostream>
+    using namespace std;
+    class Base{
+        public:
+        ~Base(){ cout<<"Base class destructor\n";}
+    };
+
+    class Derived: public Base{
+        public:
+        ~Derived(){ cout<<"Derived class destructor\n";}
+    };
+    int main(){
+        Derived d;
+        return 0;
+    }
+
+    Output:
+    Derived class destructor
+    Base class destructor
+
+Rules for parameterized constructor:
+
+    1. If parameterized constructor is in base class then it must be called explicitly.
+
+Example:
+
+    #include<iostream>
+    using namespace std;
+    class Base{
+        public:
+        Base(int x){ cout<<"Base class constructor\n";}
+    };
+
+    class Derived: public Base{
+        public:
+        Derived():Base(10){   //must call Base(int)
+            cout<<"Derived class constructor\n";
+        }
+    };
+    int main(){
+        Derived d;
+        return 0;
+    }
+
+    Output:
+    Derived class constructor
+    Base class constructor
+
+If we forgot to call the parameterized constructor explicitly, it will be a compilation error.
+
+error: constructor for 'Derived' must explicitly initialize the base class 'Base' which does not have a default constructor
+   10 |     Derived(){   //must call Base(int)
+      |     ^
+/Users/mayur/Desktop/C++Projects/class.cpp:3:7: note: 'Base' declared here
+    3 | class Base{
+      |       ^
+
+Multiple Inheritance Constructor Order:
+
