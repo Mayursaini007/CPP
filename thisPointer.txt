@@ -1,0 +1,73 @@
+this Pointer in CPP:
+
+    1. this is an implicit pointer inside every non-static member function.
+    2. It always points to the object that called the function.
+    3. It is a way of cpp to tell a member function "Hey, you’re currently working on this object — here is its address."
+    4. It is a const pointer, meaning you cannot change where it points 
+
+Why do we need it?
+
+    1. To access data members from current objects explicitly.
+        Normally we write:
+            x = 5;
+        But internally it's actually:
+            this->x = 5;
+
+    2. To resolve naming conflicts.
+        When constructor parameters have the same name as member variables.
+        Example:
+        #include<iostream>
+        using namespace std;
+        class A{
+            int x;
+            public:
+            A(int x){
+                this->x = x; //resolves confusion and tells the compiler that this->x represents the member valriable while x represents the constructor parameter.
+            }
+
+        };
+        int main(){
+            A obj(10);
+            return 0;
+        }
+    
+    3. To return current object.
+        Example:
+        class Box {
+            int h;
+        public:
+            Box& setHeight(int h) {
+                this->h = h;
+                return *this;
+            }
+        };
+
+Final example for undersstanding:
+
+    #include<iostream>
+    using namespace std;
+    class Student{
+        int age;
+        public:
+        Student(int age){
+            this->age = age;
+            cout<<"Object is at address "<<this<<endl;
+        }
+        void show(){
+            cout<<"Age = "<<this->age<<" from object at address "<<this<<endl;
+        }
+    };
+    int main(){
+        Student s1(20);
+        Student s2(21);
+
+        s1.show();
+        s2.show();
+        return 0;
+    }
+
+Output:
+    Object is at address 0x16bd4ed98
+    Object is at address 0x16bd4ed94
+    Age = 20 from object at address 0x16bd4ed98
+    Age = 21 from object at address 0x16bd4ed94
