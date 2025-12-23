@@ -334,3 +334,39 @@ error: constructor for 'Derived' must explicitly initialize the base class 'Base
 
 Multiple Inheritance Constructor Order:
 
+    Order for constructor is based on inhertance list.
+
+    Example:
+
+    #include<iostream>
+    using namespace std;
+    class Base1{
+        public:
+        Base1(){ cout<<"Base1 class constructor\n";}
+    };
+
+    class Base2{
+        public:
+        Base2(){   //must call Base(int)
+            cout<<"Base2 class constructor\n";
+        }
+    };
+
+    class Derived:public Base1, public Base2{ //if this os Base2,Base1 then order would be Base2->Base1->Derived 
+        public:
+        Derived(){
+            cout<<"Derived class constructor\n";
+        }
+    };
+
+    int main(){
+        Derived d;
+        return 0;
+    }
+
+    Output:
+    Base1 class constructor
+    Base2 class constructor
+    Derived class constructor
+
+    
