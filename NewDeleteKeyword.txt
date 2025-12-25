@@ -1,0 +1,146 @@
+New and Delete keyword in CPP:
+
+1. In CPP variables can live in different memory regions:
+
+    -> Stack:
+        . Automatic memory
+        . Fast
+        . Freed automatically when the function ends
+        . Limited size
+        . Example:
+
+            void fun() {
+                int x = 10;  // lives on stack
+            }               // x dies here automatically
+    
+    -> Heap:
+        . Dynamic memory
+        . Good for large data or data that must outlive a function
+        . Must be manually managed
+        . To use heap we need:
+            -> new //allocate memory
+            -> delete //free memory
+        
+2. Basic usage of new:
+
+    -> Allocating a single variable
+        Example:
+
+            int* p = new int;  // memory allocated on heap, uninitialized
+            *p = 10;           // assign a value
+            delete p;          // frees the memory
+    -> Allocating and initializing
+        Example:
+
+            int* p = new int(50);  // initializes the int with value 50
+
+            Equivalent of doing:
+            
+            int* p = new int;
+            *p = 50;
+
+3. Allocating array using new:
+
+    -> int* arr = new int[5];   // allocates space for 5 ints
+    -> This gives continuous memory in the heap like below:
+
+        arr → [ ? | ? | ? | ? | ? ]
+
+    -> To free this memory
+
+        delete[] arr;
+    -> If we use delete istead of delete[] then any crash, leak or silent corrupt memory can occur.
+
+4. What happens internally when you use new:
+
+    -> new actually works in two steps:
+        . Allocates memory (similar to malloc but type safe and knows the size of the object)
+        . Calls constructor (if object)
+        . So:
+
+            Test* t = new Test();
+
+            Is Equivalent to
+
+            void* raw = operator new(sizeof(Test));  // allocation (creating the block equal to the size of Test)
+            Test* t = static_cast<Test*>(raw);       // casting the void pointer to Test type
+            t->Test();                               // constructor call
+
+        . How to use delete here?
+            delete t
+            -> It calls destructor and frees memory.
+
+5. Memory Leaks:
+
+    -> A memory leak occurs when the memory is allocated but isn't freed.
+    -> Example:
+
+        int *p = new int(10); //p points to a memory block that contains 10
+        p = new int(20); //p is now pointing to a memory block that contains 20 and 10 is now unreachable
+
+    -> With this kind of approach over time the program consumes more and more memory.
+    -> Long running programs and servers gets crashed due to this.
+    -> There a a few tools that are used to identify memory leaks in industry level applications. Example: Valgrind (Linux), Address Sanitizer, Visual Leak Detector (Windows) etc.
+
+6. Dangling Pointer:
+
+    -> A pointer that points to a memory that is already freed.
+    -> Example:
+        int *p = new int(20);
+        delete p;
+        *p = 10; // ❌ writing into freed memory
+    -> This can cause silent corruption which is sometimes not detectable.
+    -> The fix to this is:
+        delete p;
+        p = nullptr;
+
+        .Now if we try to delete p it does nothing and if we try to do *p i.e. *nullptr then crash will happen and it will be easily detectable.
+
+7. When new fails and the memory requested cannot be allocated, it throws an exception to type std::bad_alloc
+
+8. Using new with classes:
+
+    -> Example;
+        #include<iostream>
+        using namespace std;
+        class A{
+            public:
+            A(){ cout<<"Calling constructor\n"; }
+            ~A(){ cout<<"Calling Destructor\n"; }
+        };
+        int main(){
+            A* p = new A();
+            delete p;
+            return 0;
+        }
+
+        Output:
+        Calling constructor
+        Calling Destructor
+
+    -> Constructor runs on allocation, destructor on deletion.
+
+9. Arrays of objects:
+
+    ->Example:
+        #include<iostream>
+        using namespace std;
+        class A{
+            public:
+            A(){ cout<<"Calling constructor\n"; }
+            ~A(){ cout<<"Calling Destructor\n"; }
+        };
+        int main(){
+            A* arr = new A[3];
+            delete[] arr;
+            return 0;
+        }
+
+        Output:
+        Calling constructor
+        Calling constructor
+        Calling constructor
+        Calling Destructor
+        Calling Destructor
+        Calling Destructor
+
