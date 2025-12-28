@@ -1,0 +1,127 @@
+Polymorphism in CPP:
+
+1. Poly -> many and morph -> forms
+2. The word "Polymorphism" means having many forms. In simple words, we can define Polymorphism
+   as the ability of message to be displayed in more than one form. A real life example of 
+   Polymorphism is a person who at the same time can have different characteristics.
+3. Like a man at the same time is a father, a husband and an employee. So the same person exhibits
+   different behavior in different situations.
+4. Polymorphism is mainly of two types:
+    1. Compile time Polymorphism
+       |-----Function Overloading
+       |-----Operator Overloading
+    2. Runtime Polymorphism
+       |-----Virtual Function
+
+5. Compile time overloading:
+    -> Function OVerloading:
+
+        . When there are multiple functions with same name but different parameters, then
+          the function is said to be overloaded. Function can be overloaded by changing number
+          of arguments or/and changing the types of arguments.
+        . Example:
+            #include<iostream>
+            using namespace std;
+            void fun(int a, int b){
+                cout<<"Sum of numbers is: "<<a+b<<endl;
+            }
+            void fun(double a, double b){
+                cout<<"Sum of numbers is: "<<a+b<<endl;
+            }
+            void fun(int a, int b, int c){
+                cout<<"Sum of numbers is: "<<a+b+c<<endl;
+            }
+            int main(){
+                fun(1, 2);
+                fun(2.5,4.5);
+                fun(1,2,3);
+                return 0;
+            }
+
+            Output:
+            Sum of numbers is: 3
+            Sum of numbers is: 7
+            Sum of numbers is: 6
+    
+    -> Operator Overloading:
+
+        . In cpp we can make operators work for user-defined classes. This means cpp has the ability to provide the operators
+          with a special meaning for a data type.
+        . Same operator shows different behavior in different context.
+        . Example:
+            2+4 = 6 //mathematical addition of two number
+            mayur+saini = mayursaini  //Concatenation of two strings
+        . Code Example: Overloading addition operator (Binary operator overloading)
+            #include<iostream>
+            using namespace std;
+            class Complex{
+                private:
+                int real, imag;
+                public:
+                Complex(int a = 0, int b = 0){ real = a; imag = b;}
+
+                Complex operator +(Complex const &obj){
+                    Complex res;
+                    res.real = real + obj.real;
+                    res.imag = imag + obj.imag;
+                    return res;
+                }
+
+                void show(){ cout<<real<<"+i"<<imag<<endl;}
+            };
+
+            int main(){
+                Complex c1(4,5), c2(6,7);
+                Complex c3 = c1+c2; //can also be written as c1+operator +(c2) or we can give operator + function some other name as well
+                c3.show();
+                return 0;
+            }
+
+        Output:
+        10+i12
+
+        . Unary operator overloading:
+
+            #include<iostream>
+            using namespace std;
+            class Distance{
+                private:
+                int feets, inches;
+                public:
+                Distance(){ feets = 0; inches = 0;}
+                Distance(int f, int i){ feets = f; inches = i; }
+                Distance operator -(){
+                    Distance temp;
+                    temp.feets = -feets;
+                    temp.inches = -inches;
+                    return temp;
+                }
+                void display(){ cout<<"F:"<<feets<<"I:"<<inches<<endl;}
+            };
+            int main(){
+                Distance D1(10, 15), D2;
+                D2 = -D1; //D2=D1.operator -()  (cannot be written as D2 = D1-)
+                D2.display();
+                return 0;
+            }
+        
+        Output:
+        F:-10I:-15
+
+    -> Operators that cannot be overloaded:
+        . Scope resolution operator (::)
+        . Sizeof 
+        . member selector (.)
+        . member pointer selector (*)
+        . ternary operator (?:)
+
+    -> Existing operators can only be overloaded, but the new operators cannnot be overloaded.
+    -> When unary operators are overloaded through a member function take no explicit arguments
+       but if they are overloaded by a friend function takes one argument. 
+    -> When binary operators are overloaded through a member function takes one expliciti argument,
+       but if they are overloaded by a friend function takes two arguments.
+    
+
+    Pre and post increment operator overloading:
+
+    
